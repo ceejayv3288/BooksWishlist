@@ -1,4 +1,6 @@
-﻿using Prism;
+﻿using BooksWishlist.ViewModels;
+using BooksWishlist.Views;
+using Prism;
 using Prism.Ioc;
 using Prism.Unity;
 using System;
@@ -21,7 +23,9 @@ namespace BooksWishlist
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterForNavigation<BookDetailsPage, BookDetailsPageViewModel>();
+            containerRegistry.RegisterForNavigation<BooksPage, BooksPageViewModel>();
+            containerRegistry.RegisterForNavigation<NewBookPage, NewBookPageViewModel>();
         }
     }
 }
