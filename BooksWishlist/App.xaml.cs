@@ -18,11 +18,14 @@ namespace BooksWishlist
 
         protected override void OnInitialized()
         {
-            OnInitialized();
+            InitializeComponent();
+
+            NavigationService.NavigateAsync("NavigationPage/BooksPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<BookDetailsPage, BookDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<BooksPage, BooksPageViewModel>();
             containerRegistry.RegisterForNavigation<NewBookPage, NewBookPageViewModel>();
