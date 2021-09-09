@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.OS;
 using Prism;
 using Prism.Ioc;
+using System.IO;
 
 namespace BooksWishlist.Droid
 {
@@ -18,7 +19,11 @@ namespace BooksWishlist.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            LoadApplication(new App(new AndroidInitializer()));
+
+            string fileName = "books.db3";
+            string folderPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments));
+            string fullPath = Path.Combine(folderPath, fileName);
+            LoadApplication(new App(fullPath, new AndroidInitializer()));
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

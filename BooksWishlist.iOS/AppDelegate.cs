@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using Foundation;
@@ -25,7 +26,11 @@ namespace BooksWishlist.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            LoadApplication(new App(new iOSInitializer()));
+
+            string fileName = "books.db3";
+            string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library");
+            string fullPath = Path.Combine(folderPath, fileName);
+            LoadApplication(new App(fullPath, new iOSInitializer()));
 
             return base.FinishedLaunching(app, options);
         }
