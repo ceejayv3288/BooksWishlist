@@ -139,7 +139,7 @@ namespace BooksWishlist.Models
             public List<Item> items { get; set; }
         }
 
-        public class Books
+        public class Book
         {
             public string thumbnail { get; set; }
             public string title { get; set; }

@@ -1,6 +1,7 @@
 ﻿using BooksWishlist.Helpers;
 using Newtonsoft.Json;
 using Prism.Commands;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,12 +18,14 @@ namespace BooksWishlist.ViewModels
         private JsonSerializer _serializer = new JsonSerializer();
 
         public ICommand SearchCommand { get; set; }
-        public ObservableCollection<Books> SearchResults { get; set; }
+        public ICommand SaveCommand { get; set; }
+        public ObservableCollection<Book> SearchResults { get; set; }
 
         public NewBookPageViewModel()
         {
             SearchCommand = new DelegateCommand<string>(GetSearchResults);
-            SearchResults = new ObservableCollection<Books>();
+            SaveCommand = new DelegateCommand<Book>(SaveBooks, CanSaveBooks);
+            SearchResults = new ObservableCollection<Book>();
         }
 
         private async void GetSearchResults(string query)
@@ -53,7 +56,7 @@ namespace BooksWishlist.ViewModels
                     SearchResults.Clear();
                     foreach (var book in data.items)
                     {
-                        Books currentBook = new Books
+                        Book currentBook = new Book
                         {
                             thumbnail = book.volumeInfo.imageLinks?.thumbnail != null ? book.volumeInfo.imageLinks?.thumbnail : string.Empty,
                             title = book.volumeInfo?.title != null ? book.volumeInfo?.title : string.Empty
@@ -64,9 +67,9 @@ namespace BooksWishlist.ViewModels
                         {
                             foreach (var author in book.volumeInfo.authors)
                             {
-                                authors += author + " ,";
+                                authors += author + ", ";
                             }
-                            authors = authors.Replace(" ,", string.Empty);
+                            authors = authors.Substring(0, authors.Length - 2);
                             currentBook.authors = authors;
                         }
 
@@ -78,6 +81,31 @@ namespace BooksWishlist.ViewModels
 
                 }
             }
+        }
+
+        private void SaveBooks(Book book)
+        {
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabasePath))
+            {
+                var recordCount = conn.Table<Book>().Where(bookStored => bookStored.authors == book.authors && bookStored.thumbnail == book.thumbnail && bookStored.title == book.title).Count();
+                if (recordCount == 0)
+                {
+                    conn.CreateTable<Book>();
+                    int bookInserted = conn.Insert(book);
+                    if (bookInserted >= 1)
+                        App.Current.MainPage.DisplayAlert("Success!", "Book saved", "Ok");
+                    else
+                        App.Current.MainPage.DisplayAlert("Failure", "An error occured while saving the book", "Ok");
+                }
+                else
+                {
+                    App.Current.MainPage.DisplayAlert("Failed", "Book already saved!", "Ok");
+                }
+            }
+        }
+        private bool CanSaveBooks(Book book)
+        {
+            return book != null;
         }
     }
 }
