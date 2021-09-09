@@ -7,11 +7,16 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <SearchBar Placeholder="Search ISBN, Author or Title"/>
-            <ListView>
+            <SearchBar x:Name="bookSearchBar"
+                       Placeholder="Search ISBN, Author or Title"
+                       SearchCommand="{Binding SearchCommand}"
+                       SearchCommandParameter="{Binding Text, Source={x:Reference bookSearchBar}}"/>
+            <ListView ItemsSource="{Binding SearchResults}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell/>
+                        <ImageCell ImageSource="{Binding thumbnail}"
+                                   Text="{Binding title}"
+                                   Detail="{Binding authors}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
