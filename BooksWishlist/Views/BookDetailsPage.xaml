@@ -4,13 +4,17 @@
              x:Class="BooksWishlist.Views.BookDetailsPage">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Delete"
-                     IsDestructive="true"/>
+                     IsDestructive="true"
+                     Command="{Binding DeleteBookCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <Label FontSize="25"
+            <Image Source="{Binding Thumbnail}"/>
+            <Label Text="{Binding Title}" 
+                   FontSize="25"
                FontAttributes="Bold"/>
-            <Label FontSize="20"
+            <Label Text="{Binding Author}"
+                   FontSize="20"
                TextColor="Silver"/>
             <Label FontSize="15"
                TextColor="Green"/>

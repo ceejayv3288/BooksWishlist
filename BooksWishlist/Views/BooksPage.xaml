@@ -13,14 +13,33 @@
                 Command="{Binding PageAppearingCommand}" />
     </ContentPage.Behaviors>
     <ContentPage.Content>
-        <ListView ItemsSource="{Binding SavedBooks}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ImageCell ImageSource="{Binding thumbnail}"
+        <StackLayout>
+            <Label Text="No books currently saved. Try adding some."
+                   FontSize="Large"/>
+            <ListView x:Name="bookListView" 
+                  ItemsSource="{Binding SavedBooks}">
+                <ListView.Behaviors>
+                    <!--<xct:EventToCommandBehavior
+                    EventName="ItemSelected"
+                    Command="{Binding ItemSelectedCommand}"
+                    CommandParameter="{x:Reference bookListView}"/>-->
+                    <!--<xct:EventToCommandBehavior
+                    EventName="ItemSelected"
+                    Command="{Binding ItemSelectedCommand}"
+                    CommandParameter="{Binding Source={x:Reference bookListView}}"/>-->
+                    <xct:EventToCommandBehavior
+                    EventName="ItemSelected"
+                    Command="{Binding ItemSelectedCommand}"
+                    CommandParameter="{x:Reference bookListView}"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ImageCell ImageSource="{Binding thumbnail}"
                                    Text="{Binding title}"
                                    Detail="{Binding authors}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

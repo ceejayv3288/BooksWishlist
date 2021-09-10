@@ -50,8 +50,11 @@ namespace BooksWishlist.ViewModels
                     //    }
                     //}
 
-                    var result = await client.GetStringAsync($"https://www.googleapis.com/books/v1/volumes?q={query}&key={Constants.GOOGLE_BOOKS_API_KEY}");
-                    var data = JsonConvert.DeserializeObject<BooksAPI>(result);
+
+                    var data = await App.GoogleBooksAPIManager.GetSearchListAsync(query);
+
+                    //var result = await client.GetStringAsync($"https://www.googleapis.com/books/v1/volumes?q={query}&key={Constants.GOOGLE_BOOKS_API_KEY}");
+                    //var data = JsonConvert.DeserializeObject<BooksAPI>(result);
 
                     SearchResults.Clear();
                     foreach (var book in data.items)
@@ -85,22 +88,37 @@ namespace BooksWishlist.ViewModels
 
         private void SaveBooks(Book book)
         {
-            using (SQLiteConnection conn = new SQLiteConnection(App.DatabasePath))
+            //using (SQLiteConnection conn = new SQLiteConnection(App.DatabasePath))
+            //{
+            //    var recordCount = conn.Table<Book>().Where(bookStored => bookStored.authors == book.authors && bookStored.thumbnail == book.thumbnail && bookStored.title == book.title).Count();
+            //    if (recordCount == 0)
+            //    {
+            //        conn.CreateTable<Book>();
+            //        int bookInserted = conn.Insert(book);
+            //        if (bookInserted >= 1)
+            //            App.Current.MainPage.DisplayAlert("Success!", "Book saved", "Ok");
+            //        else
+            //            App.Current.MainPage.DisplayAlert("Failure", "An error occured while saving the book", "Ok");
+            //    }
+            //    else
+            //    {
+            //        App.Current.MainPage.DisplayAlert("Failed", "Book already saved!", "Ok");
+            //    }
+            //}
+
+            var recordCount = App.Connection.Table<Book>().Where(bookStored => bookStored.authors == book.authors && bookStored.thumbnail == book.thumbnail && bookStored.title == book.title).Count();
+            if (recordCount == 0)
             {
-                var recordCount = conn.Table<Book>().Where(bookStored => bookStored.authors == book.authors && bookStored.thumbnail == book.thumbnail && bookStored.title == book.title).Count();
-                if (recordCount == 0)
-                {
-                    conn.CreateTable<Book>();
-                    int bookInserted = conn.Insert(book);
-                    if (bookInserted >= 1)
-                        App.Current.MainPage.DisplayAlert("Success!", "Book saved", "Ok");
-                    else
-                        App.Current.MainPage.DisplayAlert("Failure", "An error occured while saving the book", "Ok");
-                }
+                App.Connection.CreateTable<Book>();
+                int bookInserted = App.Connection.Insert(book);
+                if (bookInserted >= 1)
+                    App.Current.MainPage.DisplayAlert("Success!", "Book saved", "Ok");
                 else
-                {
-                    App.Current.MainPage.DisplayAlert("Failed", "Book already saved!", "Ok");
-                }
+                    App.Current.MainPage.DisplayAlert("Failure", "An error occured while saving the book", "Ok");
+            }
+            else
+            {
+                App.Current.MainPage.DisplayAlert("Failed", "Book already saved!", "Ok");
             }
         }
         private bool CanSaveBooks(Book book)
