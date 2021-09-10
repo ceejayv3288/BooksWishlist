@@ -14,8 +14,6 @@
     </ContentPage.Behaviors>
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="No books currently saved. Try adding some."
-                   FontSize="Large"/>
             <ListView x:Name="bookListView" 
                   ItemsSource="{Binding SavedBooks}">
                 <ListView.Behaviors>
